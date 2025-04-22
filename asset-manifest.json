@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/Dog-Guessing-Game/static/css/main.561bf766.css",
+    "main.js": "/Dog-Guessing-Game/static/js/main.5d518c3e.js",
+    "static/js/453.d5510629.chunk.js": "/Dog-Guessing-Game/static/js/453.d5510629.chunk.js",
+    "static/media/BG.jpg": "/Dog-Guessing-Game/static/media/BG.3615b8a2c9860f11169d.jpg",
+    "index.html": "/Dog-Guessing-Game/index.html",
+    "main.561bf766.css.map": "/Dog-Guessing-Game/static/css/main.561bf766.css.map",
+    "main.5d518c3e.js.map": "/Dog-Guessing-Game/static/js/main.5d518c3e.js.map",
+    "453.d5510629.chunk.js.map": "/Dog-Guessing-Game/static/js/453.d5510629.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.561bf766.css",
+    "static/js/main.5d518c3e.js"
+  ]
+}
