@@ -139,6 +139,18 @@ function App() {
     }
   };
 
+  // Show dropdown even after showing hint
+  useEffect(() => {
+    // Recalculate suggestions when showHint is activated
+    if (showHint && userGuess && allBreeds.length > 0) {
+      const filteredSuggestions = allBreeds.filter(breed =>
+        breed.toLowerCase().startsWith(userGuess.toLowerCase())
+      );
+      setSuggestions(filteredSuggestions);
+    }
+  }, [showHint, userGuess, allBreeds]);
+  
+
   // Handle clicking suggestion (remains the same)
   const handleSuggestionClick = (suggestion) => {
     setUserGuess(suggestion);
@@ -149,40 +161,49 @@ function App() {
   // Handle guess submission - UPDATED LOGIC
   const handleGuessSubmit = (e) => {
     e.preventDefault();
-    if (!userGuess.trim() || gameState !== 'playing') return;
+    if (gameState !== 'playing') return;
   
-    const trimmedGuess = userGuess.trim().toLowerCase();
+    let guessToCheck = userGuess.trim().toLowerCase();
+  
+    // Auto-select the first suggestion if available and userGuess isn't exactly one of them
+    if (suggestions.length > 0 && suggestions[0].toLowerCase() !== guessToCheck) {
+      guessToCheck = suggestions[0].toLowerCase();
+      setUserGuess(suggestions[0]); // Update visible input
+    }
+  
     setSuggestions([]);
     setFeedbackMessage(''); // Clear previous feedback
   
-    if (trimmedGuess === breedName) {
+    if (guessToCheck === breedName) {
       setGameState('won');
       setFeedbackMessage(`Correct! It's a "${breedName}"!`);
     } else {
-      // Incorrect guess
       const currentWrongAttempts = wrongAttempts + 1;
       setWrongAttempts(currentWrongAttempts);
       setFeedbackMessage('Incorrect, try again!');
   
-      // ❗ Filter out the incorrect guess from suggestions
-      setAllBreeds(prevBreeds => prevBreeds.filter(breed => breed.toLowerCase() !== trimmedGuess));
+      setAllBreeds(prevBreeds =>
+        prevBreeds.filter(breed => breed.toLowerCase() !== guessToCheck)
+      );
   
-      // ❗ Clear the input field
-      setUserGuess('');
+      setUserGuess(''); // Clear input
   
-      // Check if hint should become available
       if (currentWrongAttempts >= HINT_THRESHOLD && !hintAvailable) {
         setHintAvailable(true);
       }
     }
-  };
-  
+  };  
 
   // Handle hint click (remains the same)
   const handleHintClick = () => {
     if (hintAvailable) {
       setShowHint(true);
        setFeedbackMessage(''); // Clear "Incorrect" message when hint is shown
+
+    // Pre-fill the input with the first letter of the breed after hint!
+    // if (breedName) {
+    //   setUserGuess(breedName.charAt(0));
+    // }
     }
   };
 
