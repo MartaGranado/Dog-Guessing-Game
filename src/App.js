@@ -88,6 +88,7 @@ function App() {
     setError(null);
     setFeedbackMessage(''); // Clear feedback
     setGuessedBreeds([]); // Reset guessed breeds
+    setAllBreeds(allBreeds); 
 
 
     // Wait briefly if breeds are still fetching (optional, avoids race condition)
