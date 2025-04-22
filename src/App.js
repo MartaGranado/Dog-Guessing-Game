@@ -98,7 +98,6 @@ function App() {
        // await new Promise(resolve => setTimeout(resolve, 500));
     }
 
-
     try {
       const response = await fetch(API_URL_RANDOM);
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -309,7 +308,7 @@ function App() {
                   />
                   {suggestions.length > 0 && (
                     <ul className="suggestions-list">
-                      {suggestions.slice(0, 10).map((suggestion, index) => (
+                      {suggestions.map((suggestion, index) => (
                         <li
                           key={index}
                           onClick={() => handleSuggestionClick(suggestion)}
