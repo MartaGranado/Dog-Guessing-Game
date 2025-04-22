@@ -249,7 +249,7 @@ function App() {
 
   return (
     <div className="App">
-      <h1>Guess the Dog Breed!</h1>
+      <h1>🐶Guess the Dog Breed!🐕</h1>
 
       {gameState === 'loading' && <p>Loading game...</p>}
       {error && !imageUrl && gameState !== 'error' && <p className="error-message">{error}</p>}
