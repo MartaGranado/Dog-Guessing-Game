@@ -1,5 +1,13 @@
 /* --- Additions for Autocomplete --- */
 
+
+
+body {
+  background-image: url('./BG.jpg'); /* Relative path to the image */
+  background-size: cover; /* Ensure the image covers the entire background */
+  background-position: center; /* Center the image */
+}
+
 .guess-form {
   display: flex;
   gap: 10px;
