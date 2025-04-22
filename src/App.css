@@ -1,12 +1,4 @@
-/* --- Additions for Autocomplete --- */
-
-
-
-body {
-  background-image: url('./BG.jpg'); /* Relative path to the image */
-  background-size: cover; /* Ensure the image covers the entire background */
-  background-position: center; /* Center the image */
-}
+/* This CSS file styles the Dog Guessing Game application. */
 
 .guess-form {
   display: flex;
@@ -62,16 +54,19 @@ body {
    outline: none;
 }
 
-/* --- Existing Styles (ensure they are still present) --- */
 body {
   font-family: sans-serif;
   background-color: #f4f4f4;
+  background-image: url('./BG.jpg');
+  background-size: cover;
+  background-position: center;
   display: flex;
   justify-content: center;
   align-items: flex-start;
   min-height: 100vh;
   padding-top: 20px;
 }
+
 
 .App {
   background-color: #fff;
@@ -193,4 +188,36 @@ h1 {
     margin-top: 5px; /* Adjusted margin */
     font-style: italic;
     color: #6c757d;
+}
+
+.lives-box {
+  width: 80px;
+  height: 60px;
+  background-color: #eee;
+  border: 2px solid #999;
+  border-radius: 8px;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px auto;
+  cursor: default;
+  user-select: none;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.lives-box.pulsating {
+  animation: pulse 1s infinite;
+  background-color: #ffdede;
+  cursor: pointer;
+  color: #333;
+  border-color: #999 ;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
 }

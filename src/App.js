@@ -23,6 +23,8 @@ function App() {
   const [allBreeds, setAllBreeds] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [isFetchingBreeds, setIsFetchingBreeds] = useState(true);
+  const [guessedBreeds, setGuessedBreeds] = useState([]);
+
 
   // --- Helper Functions (keep getBreedFromUrl and processBreedList as before) ---
     const getBreedFromUrl = (url) => {
@@ -85,6 +87,8 @@ function App() {
     setSuggestions([]);
     setError(null);
     setFeedbackMessage(''); // Clear feedback
+    setGuessedBreeds([]); // Reset guessed breeds
+
 
     // Wait briefly if breeds are still fetching (optional, avoids race condition)
     if (isFetchingBreeds) {
@@ -165,14 +169,33 @@ function App() {
   
     let guessToCheck = userGuess.trim().toLowerCase();
   
-    // Auto-select the first suggestion if available and userGuess isn't exactly one of them
-    if (suggestions.length > 0 && suggestions[0].toLowerCase() !== guessToCheck) {
-      guessToCheck = suggestions[0].toLowerCase();
-      setUserGuess(suggestions[0]); // Update visible input
+    // If the guess has already been made, block submission
+    if (guessedBreeds.includes(guessToCheck)) {
+      setFeedbackMessage('You already tried that!');
+      return;
+    }
+  
+    // Get current suggestions again for validation
+    const matchingSuggestions = allBreeds.filter(breed =>
+      breed.toLowerCase().startsWith(guessToCheck)
+    );
+  
+    // If no suggestions left for that prefix, block submission
+    if (matchingSuggestions.length === 0) {
+      setFeedbackMessage('No more breeds match this input.');
+      return;
+    }
+  
+    // Auto-select first suggestion if guess doesn't match any exactly
+    const exactMatch = matchingSuggestions.find(b => b.toLowerCase() === guessToCheck);
+    if (!exactMatch) {
+      guessToCheck = matchingSuggestions[0].toLowerCase();
+      setUserGuess(matchingSuggestions[0]); // Update visible input
     }
   
     setSuggestions([]);
-    setFeedbackMessage(''); // Clear previous feedback
+    setFeedbackMessage('');
+    setGuessedBreeds(prev => [...prev, guessToCheck]); // Add to guessed
   
     if (guessToCheck === breedName) {
       setGameState('won');
@@ -186,13 +209,14 @@ function App() {
         prevBreeds.filter(breed => breed.toLowerCase() !== guessToCheck)
       );
   
-      setUserGuess(''); // Clear input
+      setUserGuess('');
   
       if (currentWrongAttempts >= HINT_THRESHOLD && !hintAvailable) {
         setHintAvailable(true);
       }
     }
-  };  
+  };
+  
 
   // Handle hint click (remains the same)
   const handleHintClick = () => {
@@ -232,9 +256,34 @@ function App() {
       {gameState === 'error' && <p className="error-message">Error: {error} <button onClick={fetchNewGame}>Try Again</button></p>}
 
 
+      {/* Lives Box */}
+      {gameState === 'playing' && !showHint && (
+      <div
+        className={`lives-box ${wrongAttempts >= HINT_THRESHOLD ? 'pulsating hint-mode' : ''}`}
+        onClick={() => {
+          if (wrongAttempts >= HINT_THRESHOLD) {
+            handleHintClick();
+          }
+        }}
+        title={wrongAttempts >= HINT_THRESHOLD ? "Click to reveal hint!" : "Remaining tries"}
+      >
+        {wrongAttempts >= HINT_THRESHOLD ? 'Hint!' : Math.max(HINT_THRESHOLD - wrongAttempts, 0)}
+      </div>
+    )}
+
+
       {imageUrl && gameState !== 'loading' && gameState !== 'error' && (
-        <div className="game-area">
-          <img src={imageUrl} alt="Dog to guess" className="dog-image" />
+      <div className="game-area">
+        
+        {/* Show hint text */}
+        {gameState === 'playing' && showHint && breedName && (
+          <p className="hint-revealed">
+            Hint: The breed starts with "{breedName.charAt(0).toUpperCase()}"
+          </p>
+        )}
+
+        <img src={imageUrl} alt="Dog to guess" className="dog-image" />
+
 
           <div className="controls">
             {/* Display feedback message */}
@@ -277,29 +326,6 @@ function App() {
                   Guess
                 </button>
               </form>
-            )}
-
-             {/* Don't show specific "won" or "gave up" messages here if using feedbackMessage */}
-            {/* {gameState === 'won' && (...) } */}
-            {/* {gameState === 'gaveUp' && (...) } */}
-
-
-            {/* Hint Logic - UPDATED Conditions */}
-            {gameState === 'playing' && hintAvailable && !showHint && (
-              <p
-                className="hint-available"
-                onClick={handleHintClick}
-                role="button"
-                tabIndex={0}
-                onKeyPress={(e) => (e.key === 'Enter' || e.key === ' ') && handleHintClick()}
-              >
-                Show Hint (First Letter)
-              </p>
-            )}
-            {gameState === 'playing' && showHint && breedName && (
-              <p className="hint-revealed">
-                Hint: The breed starts with "{breedName.charAt(0).toUpperCase()}"
-              </p>
             )}
 
              {/* Control Buttons */}
