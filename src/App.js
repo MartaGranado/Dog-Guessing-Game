@@ -74,7 +74,19 @@ function App() {
       sultan: 'germanshepherd',
       yuki: 'golden retriever',
       kiara: 'mix',
-      reina: 'labrador'
+      reina: 'labrador',
+      jock: 'terrier scottish',
+      'scooby doo': 'dane great',
+      'scooby': 'dane great',
+      'scooby-doo': 'dane great',
+      'scoobydoo': 'dane great',
+      tramp: 'mix',
+      lady: 'spaniel cocker',
+      ryuk: 'shiba',
+      hachiko: 'akita',
+      balto: 'mix',
+      laika: 'mix',
+      bethoven: 'stbernard'
     }
     
   // --- Data Fetching (fetch All Breeds useEffect remains the same) ---
