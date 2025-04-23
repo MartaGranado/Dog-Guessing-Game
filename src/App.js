@@ -51,6 +51,32 @@ function App() {
         return breeds.sort();
     };
 
+    // Synonims for breeds
+    const breedSynonyms = {
+      //What you put : What shows in dropwdown list
+      aussie: 'australian shepherd',
+      xoloitzcuintli: 'mexicanhairless',
+      ridgeback: 'rhodesian ridgeback',
+      'doberman pinscher': 'doberman',
+      pom: 'pomeranian',
+      'siberian husky': 'husky',
+      'cavalier spaniel': 'cavapoo',
+      golden: 'retriever golden',
+      lab: 'labrador',
+      'german shepherd': 'germanshepherd',
+      'labrador retriever': 'labrador'
+    };
+
+    const easterEggs = {
+      rastreator: 'hound basset',
+      luna: 'chihuahua',
+      tan: 'germanshepherd',
+      sultan: 'germanshepherd',
+      yuki: 'golden retriever',
+      kiara: 'mix',
+      reina: 'labrador'
+    }
+    
   // --- Data Fetching (fetch All Breeds useEffect remains the same) ---
    useEffect(() => {
     const fetchAllBreeds = async () => {
@@ -131,28 +157,54 @@ function App() {
   const handleInputChange = (e) => {
     const value = e.target.value;
     setUserGuess(value);
-    setFeedbackMessage(''); // Clear feedback when typing
-
+    setFeedbackMessage('');
+  
     if (value.length > 0 && allBreeds.length > 0) {
-      const filteredSuggestions = allBreeds.filter(breed =>
-        breed.toLowerCase().startsWith(value.toLowerCase())
+      const lowerValue = value.toLowerCase();
+  
+      // Match real breed names
+      const nameMatches = allBreeds.filter(breed =>
+        breed.toLowerCase().includes(lowerValue)
       );
-      setSuggestions(filteredSuggestions);
+  
+      // Match partial synonyms (startsWith)
+      const matchedSynonyms = Object.keys(breedSynonyms).filter(syn =>
+        syn.startsWith(lowerValue)
+      );
+      const synonymTargets = matchedSynonyms.map(syn => breedSynonyms[syn]);
+      const synonymMatches = allBreeds.filter(breed =>
+        synonymTargets.includes(breed.toLowerCase())
+      );
+  
+      // Exact matches only for easterEggs
+      const matchedEasterEggs = Object.keys(easterEggs).includes(lowerValue)
+        ? [easterEggs[lowerValue]]
+        : [];
+  
+      const combinedSuggestions = [...new Set([
+        ...nameMatches,
+        ...synonymMatches,
+        ...matchedEasterEggs
+      ])];
+  
+      setSuggestions(combinedSuggestions);
     } else {
       setSuggestions([]);
     }
-  };
+  };  
+  
 
   // Show dropdown even after showing hint
   useEffect(() => {
-    // Recalculate suggestions when showHint is activated
     if (showHint && userGuess && allBreeds.length > 0) {
+      const regex = new RegExp(`(?:^|\\s)${userGuess.toLowerCase()}`);
       const filteredSuggestions = allBreeds.filter(breed =>
-        breed.toLowerCase().startsWith(userGuess.toLowerCase())
+        regex.test(breed.toLowerCase())
       );
       setSuggestions(filteredSuggestions);
     }
   }, [showHint, userGuess, allBreeds]);
+  
   
 
   // Handle clicking suggestion (remains the same)
